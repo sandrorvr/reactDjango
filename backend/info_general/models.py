@@ -20,19 +20,23 @@ class Servidor(models.Model):
     nome = models.CharField(max_length=120)
     grupo = models.CharField(max_length=1, choices=GRUPOS, blank=False)
     setor = models.CharField(max_length=25, choices=SETORES)
+    parceiro = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.nome
+
+class Area(models.Model):
+    cod_area = models.CharField(max_length=5, primary_key=True)
+    nome = models.CharField(max_length=60)
+    descricao = models.TextField(max_length=500)
+    data_registro = models.DateField(auto_now=True)
 
 class Roteiro(models.Model):
-    matricula = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    cod_roteiro = models.CharField(max_length=5, primary_key=True)
     posto_base = models.CharField(max_length=120)
-    roteiro = models.TextField(max_length=500)
+    descricao = models.TextField(max_length=500)
     data_registro = models.DateField(auto_now=True)
 
-
-class Afinidade(models.Model):
-    data_registro = models.DateField(auto_now=True)
-    matricula = models.ForeignKey(Servidor, on_delete=models.CASCADE)
-    matricula_rx = models.CharField(max_length=7, blank=False)
-    cod_roteiro = models.ForeignKey(Roteiro, on_delete=models.CASCADE, blank=True)
 
 class Afastamento(models.Model):
     matricula = models.ForeignKey(Servidor, on_delete=models.CASCADE)
@@ -62,4 +66,3 @@ class Pedido(models.Model):
     data_fim = models.DateField(blank=False)
     participantes = models.TextField(max_length=500, blank=False)
     data_registro = models.DateField(auto_now=True)
-

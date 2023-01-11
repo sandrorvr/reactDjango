@@ -1,17 +1,14 @@
 from django.contrib import admin
-from .models import Servidor, Roteiro, Afinidade, Afastamento, Fds, Pedido
+from .models import Servidor, Roteiro, Afastamento, Fds, Pedido
 
 @admin.register(Servidor)
 class ServidorAdmin(admin.ModelAdmin):
-    list_display = ('matricula', 'nome', 'grupo', 'setor')
+    list_display = ('matricula', 'nome', 'grupo', 'setor', 'parceiro')
 
 @admin.register(Roteiro)
 class RoteiroAdmin(admin.ModelAdmin):
-    list_display = ('matricula', 'posto_base', 'roteiro', 'data_registro')
+    list_display = ('cod_roteiro', 'posto_base', 'descricao', 'data_registro')
 
-@admin.register(Afinidade)
-class AfinidadeAdmin(admin.ModelAdmin):
-    list_display = ('data_registro', 'matricula', 'matricula_rx', 'cod_roteiro')
 
 @admin.register(Afastamento)
 class AfastamentoAdmin(admin.ModelAdmin):
