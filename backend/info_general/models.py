@@ -46,25 +46,31 @@ class Local(models.Model):
         ('a11','AREA 11'),
         ]
     cod_local = models.AutoField(primary_key=True)
-    posto_base = models.CharField(max_length=60)
-    roteiro = models.TextField(max_length=500)
+    posto_base = models.CharField(max_length=30)
+    roteiro = models.TextField(max_length=300)
     area = models.CharField(max_length=3, choices=AREA, blank=False)
+    def __str__(self):
+        return f"{self.cod_local} - {self.posto_base}"
 
 
 class Afastamento(models.Model):
     cod_afastamento = models.AutoField(primary_key=True)
-    matricula = models.ForeignKey(Servidor, on_delete=models.CASCADE)
-    motivo = models.TextField(max_length=500)
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    motivo = models.CharField(max_length=25)
+    descricao = models.TextField(max_length=500)
     data_inicio = models.DateField(blank=False)
     data_fim = models.DateField(blank=False)
     data_registro = models.DateField(auto_now=True)
 
 
-class Guarnica(models.Model):
-    cod_guarnicao = models.AutoField(primary_key=True)
-    data = models.DateField(null=False)
-    parceiro_rx = models.ForeignKey(Servidor, on_delete=models.CASCADE, related_name='parceiro_rx')
-    parceiro_tx = models.ForeignKey(Servidor, on_delete=models.CASCADE, related_name='parceiro_tx')
+class Operacao(models.Model):
+    cod_operacao = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+    descricao = models.TextField(max_length=500)
+    data = models.DateField()
+
+    def __str__(self):
+        return f"{self.cod_operacao} - {self.nome}"
 
 class Escala(models.Model):
     VEICULO = [
@@ -72,21 +78,35 @@ class Escala(models.Model):
         ('moto', 'MOTO'),
         ('po', 'PO')
     ]
+    FUNCAO = [
+        ('vtr', 'COORDENADOR'),
+        ('moto', 'SUPERVISOR'),
+        ('po', 'GERENTE'),
+        ('g', 'GUARNICAO'),
+        ('adm', 'ADMINISTRACAO')
+
+    ]
     cod_escala = models.AutoField(primary_key=True)
-    cod_guarnica = models.ForeignKey(Guarnica, on_delete=models.CASCADE)
-    cod_local = models.ForeignKey(Local, on_delete=models.CASCADE)
-    equipamento = models.CharField(max_length=5, choices=VEICULO)
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    funcao = models.CharField(max_length=4, choices=FUNCAO)
+    local = models.ForeignKey(Local, on_delete=models.CASCADE)
+    operacao = models.ForeignKey(Operacao, on_delete=models.CASCADE)
+    equipamento = models.CharField(max_length=4, choices=VEICULO)
     data = models.DateField()
     hora_entrada = models.TimeField()
     hora_saida = models.TimeField() 
 
-
+    def __str__(self):
+        return f'Escala - {self.cod_escala}'
 
 
 class Pedido(models.Model):
-    matricula = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    cod_pedido = models.AutoField(primary_key=True)
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
     solicitacao = models.TextField(max_length=500, blank=False)
     data_inicio = models.DateField(blank=False)
     data_fim = models.DateField(blank=False)
-    participantes = models.TextField(max_length=500, blank=False)
     data_registro = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f'Pedido - {self.cod_pedido}'
